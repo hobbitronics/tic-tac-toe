@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+    .box{
+      height: 150px;
+      width: 150px;
+      border: 8px solid black;
+      background-color: white;
+      font-size: 60px;
+      color: black;
+      text-align: center;
+    }
+    #reset {
+      font-size: 40px;
+      background-color: aqua;
+    }
+    #board {
+      margin: 50px 50px;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="board">
+      <h1>Welcome to Tic Tac Toe!</h1>
+      <table>
+        <tr>
+          <td id="0" class="box"></td>
+          <td id="1" class="box"></td>
+          <td id="2" class="box"></td>
+        </tr>
+        <tr>
+          <td id="3" class="box"></td>
+          <td id="4" class="box"></td>
+          <td id="5" class="box"></td>
+        </tr>
+        <tr>
+          <td id="6" class="box"></td>
+          <td id="7" class="box"></td>
+          <td id="8" class="box"></td>
+        </tr>
+      </table>
+      <button id="reset">Reset The Game</button>
+    </div>
+    <script>
+    let grid = ['0', '1', '2',
+                '3', '4', '5',
+                '6', '7', '8'];
+
+    let winner;
+    let temp;
+    let temp1;
+    let turnCount = 0;
+    clicked = [];
+
+    let reset = document.getElementById('reset');
+    reset.onclick = () =>{
+      location.reload();
+      return false;
+    }
+
+    
+
+grid.forEach(function(element, index){
+clicked[index] = document.getElementById(element);
+clicked[index].addEventListener('click', function(){play(index)});
+    })
+
+    //prints the board to console
+    const printer = () => {
+    for (let i = 0; i < grid.length; i+=3) {
+      console.log(grid[i], grid[i+1], grid[i+2]);
+        }
+      };
+
+    //generates random number for pc player
+      const rand = () => {
+        let number = Math.floor(Math.random()*9);
+        if (winner === 'o'){return 10}
+    else 
+        if (grid[number] !== 'x' && grid[number] !== 'o')
+        {
+        return number     //the choice is accepted!
+        } else {return rand()}  //taken already, try again
+      }
+
+    //winning conditions Across rows
+    function winA (player) {
+    for (let h = 0; h < 7 ; h+=3) {  // h is 0 then 3 then 6
+      if (grid[h] === player && grid[h+1] === player && grid[h+2] === player){  // covers 0,1,2 3,4,5 6,7,8 and reverse
+          console.log(player +' won!')
+          winner = player;
+        }
+      }
+    //winning conditions down colums
+    for (let h = 0; h < 3 ; h++) {  // h 0, 1, 2
+      if (grid[h] === player && grid[h+3] === player && grid[h+6] === player){  // covers 0,3,6  1,4,7  2,5,8 and reverse
+        console.log(player +' won!')
+        winner = player;
+        }
+      }
+    //diagonal winning conditions
+        if ( (grid[0] + grid[4] + grid[8]) === (player+player+player) || (grid[2] + grid[4] + grid[6]) === (player+player+player)){  // covers 0,3,6  1,4,7  2,5,8 and reverse
+          console.log(player +' won!')
+          winner = player;
+        }
+    }
+
+    //plays when player clicks an empty box
+    function play (choice) {
+      if (grid[choice] !== 'x' && grid[choice] !== 'o' && winner === undefined){  //checks that box isn't already full and no winner
+      grid[choice] = 'o'                            //sets the grid number on the board to 'o'
+      clicked[choice.toString()].innerHTML = 'O';   //puts move on html board
+      console.log("Here is the board, next turn");
+      printer()
+      winA('o')   //check for a win
+      turnCount +=1;
+      if (winner === 'o'){alert('you won!')}
+      if (turnCount === 9 && winner === undefined){   //checks for a tie
+        console.log("It's a tie.")
+        alert('Its a tie!')
+        winner = 'tie';
+      }
+      temp1 = rand();   //computers choice
+      grid[temp1] = 'x'//computer move, sets random board space not already moved on 'x'
+      clicked[temp1.toString()].innerHTML = 'X';
+      console.log("Here is the board, next turn");
+      printer()
+      winA('x')
+      turnCount +=1;
+      if (winner === 'x'){alert('computer won!')}
+    }
+    }
+
+    </script>
+  </body>
+</html>
